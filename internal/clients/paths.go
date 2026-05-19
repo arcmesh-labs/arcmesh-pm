@@ -39,12 +39,22 @@ func home() string {
 	return h
 }
 
-func isWSL() bool {
+// IsWSL reports whether the process is running inside Windows Subsystem for Linux.
+func IsWSL() bool {
 	data, err := os.ReadFile("/proc/version")
 	if err != nil {
 		return false
 	}
 	return strings.Contains(strings.ToLower(string(data)), "microsoft")
+}
+
+// WSLDistro returns the WSL distribution name from $WSL_DISTRO_NAME, falling
+// back to "Ubuntu" when the variable is not set.
+func WSLDistro() string {
+	if d := os.Getenv("WSL_DISTRO_NAME"); d != "" {
+		return d
+	}
+	return "Ubuntu"
 }
 
 // FindConfig returns (resolvedPath, found). resolvedPath is empty when not found.
@@ -54,7 +64,7 @@ func FindConfig(client string) (string, bool) {
 		return "", false
 	}
 
-	if isWSL() {
+	if IsWSL() {
 		var glob, base string
 		switch client {
 		case "claude-desktop":
@@ -120,7 +130,7 @@ func CheckedPaths(client string) []string {
 	}
 	result := make([]string, len(paths))
 	copy(result, paths)
-	if isWSL() {
+	if IsWSL() {
 		switch client {
 		case "claude-desktop":
 			result = append(result, "/mnt/c/Users/*/AppData/Roaming/Claude/claude_desktop_config.json")

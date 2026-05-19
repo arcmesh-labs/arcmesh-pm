@@ -22,7 +22,7 @@ var _sections = []struct {
 	cmds  []string
 }{
 	{"Registry", []string{"search", "list"}},
-	{"Install", []string{"install", "uninstall", "set-env"}},
+	{"Install", []string{"add", "install", "uninstall", "set-env"}},
 	{"Config", []string{"config edit", "config path"}},
 	{"Clients", []string{"clients", "status", "doctor"}},
 }

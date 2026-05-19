@@ -158,6 +158,10 @@ func buildConfigEntry(manifest *registry.Manifest, client string) (map[string]in
 		}
 	}
 
+	if clients.IsWSL() && manifest.Install.Type == "pip" {
+		return wslWrapEntry(manifest.Config.Command, args, resolvedEnv), skipped, nil
+	}
+
 	entry := map[string]interface{}{
 		"command": manifest.Config.Command,
 		"args":    args,
@@ -170,4 +174,32 @@ func buildConfigEntry(manifest *registry.Manifest, client string) (map[string]in
 		entry["env"] = envMap
 	}
 	return entry, skipped, nil
+}
+
+// wslWrapEntry wraps a pip-based command so that Claude Desktop (a Windows
+// process) can launch it via wsl.exe. Env vars are inlined as KEY='value'
+// prefixes in the shell string rather than passed via the env field, which
+// is not reachable from the Windows side of the wsl.exe invocation.
+func wslWrapEntry(command string, args []string, env map[string]string) map[string]interface{} {
+	parts := append([]string{command}, args...)
+
+	var envPrefix string
+	if len(env) > 0 {
+		kvs := make([]string, 0, len(env))
+		for k, v := range env {
+			kvs = append(kvs, fmt.Sprintf("%s='%s'", k, v))
+		}
+		envPrefix = strings.Join(kvs, " ") + " "
+	}
+
+	shellStr := envPrefix + strings.Join(parts, " ")
+
+	return map[string]interface{}{
+		"command": "wsl.exe",
+		"args": []string{
+			"-d", clients.WSLDistro(),
+			"-e", "bash", "-lc",
+			shellStr,
+		},
+	}
 }
