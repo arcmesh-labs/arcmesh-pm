@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.1.1 — 2026-05-20
+
+### Added
+- `apm add` — register the MCP server in the current directory with your AI client config; auto-detects WSL distro and Python venv, wraps with `wsl.exe` on WSL
+- `install.sh` — one-liner installer for Linux and macOS
+
+### Fixed
+- `install.ps1` — replaced `RuntimeInformation.OSArchitecture` with `$env:PROCESSOR_ARCHITECTURE` for compatibility with PowerShell 5.1
+
+### Docs
+- Updated Windows installation guide in README
+
 ## v0.1.0 — 2026-05-19
 
 ### Added
