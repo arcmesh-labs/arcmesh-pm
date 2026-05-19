@@ -8,8 +8,7 @@ $ErrorActionPreference = 'Stop'
 
 # ── architecture ──────────────────────────────────────────────────────────────
 
-$arch = if ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -eq
-            [System.Runtime.InteropServices.Architecture]::Arm64) { 'arm64' } else { 'amd64' }
+$arch = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'arm64' } else { 'amd64' }
 
 # ── paths ─────────────────────────────────────────────────────────────────────
 

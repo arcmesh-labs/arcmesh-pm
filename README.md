@@ -6,20 +6,20 @@ The package manager for MCP servers.
 
 ## Installation
 
-Download the latest binary for your platform from [Releases](https://github.com/arcmesh-labs/arcmesh-pm/releases) and place it somewhere in your PATH.
-
 **macOS / Linux:**
 ```bash
 curl -L https://github.com/arcmesh-labs/arcmesh-pm/releases/latest/download/apm-linux-amd64.tar.gz | tar xz
 mv apm /usr/local/bin/
 ```
 
-**Windows:** Download the `.zip` from Releases and add the binary to your PATH.
-
 **Windows (PowerShell):**
 ```powershell
-irm https://raw.githubusercontent.com/arcmesh-labs/arcmesh-pm/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/arcmesh-labs/arcmesh-pm/master/install.ps1 | iex
 ```
+
+This downloads `apm.exe` and adds `%USERPROFILE%\bin` to your PATH.
+
+> **Note:** After installation, restart your terminal (or VS Code) for the PATH change to take effect.
 
 ## Usage
 
