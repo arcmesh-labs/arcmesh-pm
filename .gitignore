@@ -1,0 +1,15 @@
+# Build output
+bin/
+dist/
+
+# Internal AI context docs
+docs/
+
+# Go
+*.exe
+*.test
+*.out
+
+# OS
+.DS_Store
+Thumbs.db
