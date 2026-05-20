@@ -16,7 +16,7 @@ func RunInstall(install registry.ManifestInstall) error {
 		if install.Package == "" {
 			return fmt.Errorf("manifest install.package is missing")
 		}
-		python, err := findPython()
+		python, err := FindPython()
 		if err != nil {
 			return err
 		}
@@ -46,7 +46,7 @@ func RunInstall(install registry.ManifestInstall) error {
 	return nil
 }
 
-func findPython() (string, error) {
+func FindPython() (string, error) {
 	for _, name := range []string{"python3", "python"} {
 		if p, err := exec.LookPath(name); err == nil {
 			return p, nil
