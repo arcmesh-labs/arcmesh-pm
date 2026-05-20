@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.1.2 — 2026-05-20
+
+### Changed
+- `apm add` — now scaffolds a full local MCP server in `.mcp/` (server.py + config.json) instead of requiring an existing server.py in cwd
+- Auto-detects `python3`/`python` executable; removes `--venv` flag
+- WSL: wraps client config entry with `wsl.exe` so Claude Desktop (Windows) can reach WSL-hosted servers
+
 ## v0.1.1 — 2026-05-20
 
 ### Added

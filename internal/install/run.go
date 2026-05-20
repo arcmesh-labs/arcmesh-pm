@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
+	"strings"
 
 	"github.com/arcmesh-labs/arcmesh-pm/internal/registry"
 )
@@ -47,10 +49,19 @@ func RunInstall(install registry.ManifestInstall) error {
 }
 
 func FindPython() (string, error) {
-	for _, name := range []string{"python3", "python"} {
-		if p, err := exec.LookPath(name); err == nil {
-			return p, nil
+	candidates := []string{"python3", "python"}
+	if runtime.GOOS == "windows" {
+		candidates = []string{"python"}
+	}
+	for _, name := range candidates {
+		p, err := exec.LookPath(name)
+		if err != nil {
+			continue
 		}
+		if runtime.GOOS == "windows" && strings.Contains(p, "WindowsApps") {
+			continue
+		}
+		return p, nil
 	}
 	return "", fmt.Errorf("python not found. Install Python: https://python.org")
 }
