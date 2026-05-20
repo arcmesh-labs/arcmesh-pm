@@ -12,58 +12,103 @@ MCP (Model Context Protocol) lets AI assistants connect to external tools — Gi
 
 ---
 
-## Installation
+## Getting started
+
+### Install
 
 **macOS / Linux:**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/arcmesh-labs/arcmesh-pm/master/install.sh | sh
 ```
-
 No admin rights required. Installs to `~/.local/bin` and updates your shell PATH automatically.
 
 **Windows (PowerShell):**
 ```powershell
 irm https://raw.githubusercontent.com/arcmesh-labs/arcmesh-pm/master/install.ps1 | iex
 ```
-
 Restart your terminal after installation for PATH changes to take effect.
 
 ---
 
-## Quick start
+### First run
 
-```bash
-# Find a server
-apm search github
+Run `apm` to see all available commands:
 
-# Install it
-apm install github
-
-# Check what's installed
-apm status
 ```
+$ apm
 
-That's it. `apm install` fetches the manifest, runs the install, prompts for any required API tokens, and writes the config — then tells you to restart your client.
+Usage:
+  apm [command]
+
+  arcmesh-pm (apm) — the package manager for MCP servers.
+
+Registry:
+  search           Search for MCP servers across ArcMesh and official MCP Registry.
+  list             List all available MCP servers in the ArcMesh registry.
+
+Install:
+  add              Scaffold a local MCP server for the current directory and register it with your AI client config.
+  install          Install an MCP server and register it with your AI client config.
+  uninstall        Remove an MCP server from your AI client config.
+  set-env          Update an environment variable for an installed MCP server.
+
+Config:
+  config edit      Open your MCP client config file in $EDITOR.
+  config path      Print the path to your MCP client config file.
+
+Clients:
+  clients          List all supported MCP clients and whether they are configured on this system.
+  status           List all installed MCP servers across configured clients.
+  doctor           Check MCP client config health.
+```
 
 ---
 
-## Making your own repo AI-ready
+### Make your project AI-ready
 
-`apm add` scaffolds a local MCP server for the current directory and registers it with your AI client. Your assistant gets `read_file`, `list_directory`, and `search_content` tools scoped to your repo.
+Go to any project and run `apm add`. If you have multiple AI clients installed and none have MCP configured yet, you'll be asked to pick one:
 
-```bash
-cd my-project
-apm add
+```
+$ cd my-project
+$ apm add
+
+Select a client:
+  1. claude-desktop
+  2. vscode
+  3. cursor
+  4. windsurf
+Choose [1-4]: 2
+
+✓ my-project added successfully.
+  Config written to: ~/.config/Code/User/mcp.json
+  Server script:     ~/my-project/.mcp/server.py
+
+Next steps:
+  1. Restart VS Code
+  2. Look for my-project in the MCP tools panel
 ```
 
-This creates `.mcp/server.py` and `.mcp/config.json` in your project, and registers the server in your client config. Restart your client and the tools are available.
+Once you have one client configured with an active MCP server, `apm` remembers it as your default — no need to specify `--client` again. If you add more clients later, `apm` will ask again.
 
-```bash
-# Custom name
-apm add --name my-project
+---
 
-# Target a specific client
-apm add --client cursor
+### Install a server from the registry
+
+Connect your AI assistant to external services like GitHub, Notion, or Slack:
+
+```
+$ apm install github
+
+Fetching manifest for github...
+Installing github...
+? Enter GITHUB_PERSONAL_ACCESS_TOKEN (required, secret): ********
+
+✓ github installed successfully.
+  Config written to: ~/.config/Code/User/mcp.json
+
+Next steps:
+  1. Restart VS Code
+  2. Look for github in the MCP tools panel
 ```
 
 ---
@@ -160,7 +205,7 @@ apm doctor
 | Cursor | `mcp.json` |
 | Windsurf | `mcp_config.json` |
 
-When only one client is configured, `apm` selects it automatically. When multiple clients are configured, use `--client` to specify which one.
+When only one client is configured with an active MCP server, `apm` selects it automatically. When multiple are active, use `--client` to specify which one.
 
 Valid values for `--client`: `claude-desktop`, `vscode`, `cursor`, `windsurf`.
 
