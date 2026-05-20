@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
@@ -133,9 +135,38 @@ func resolveClientActive(flag string) (string, error) {
 		if len(configured) == 1 {
 			return configured[0], nil
 		}
-		return "claude-desktop", nil
+		if len(configured) == 0 {
+			return "claude-desktop", nil
+		}
+		// Multiple configured, none active — ask the user.
+		return promptClientChoice(configured)
 	}
-	return "", fmt.Errorf("multiple clients configured. Specify one with --client [claude-desktop|vscode|cursor|windsurf]")
+	// Multiple active — ask the user.
+	return promptClientChoice(clients.DetectConfiguredClients())
+}
+
+// promptClientChoice presents a numbered menu and returns the chosen client.
+// Returns an error if configured is empty or the user's input is invalid.
+func promptClientChoice(configured []string) (string, error) {
+	if len(configured) == 0 {
+		return "", fmt.Errorf("no AI clients configured. Install Claude Desktop, VS Code, Cursor, or Windsurf first")
+	}
+
+	fmt.Println("\nSelect a client:")
+	fmt.Println()
+	for i, c := range configured {
+		fmt.Printf("  %d. %s\n", i+1, c)
+	}
+	fmt.Printf("Choose [1-%d]: ", len(configured))
+
+	scanner := bufio.NewScanner(os.Stdin)
+	if scanner.Scan() {
+		n, err := strconv.Atoi(strings.TrimSpace(scanner.Text()))
+		if err == nil && n >= 1 && n <= len(configured) {
+			return configured[n-1], nil
+		}
+	}
+	return "", fmt.Errorf("invalid selection")
 }
 
 // resolveClientConfigured picks a client from configured clients only (used by set-env).
@@ -153,5 +184,5 @@ func resolveClientConfigured(flag string) (string, error) {
 	if len(configured) == 0 {
 		return "claude-desktop", nil
 	}
-	return "", fmt.Errorf("multiple clients configured. Specify one with --client [claude-desktop|vscode|cursor|windsurf]")
+	return promptClientChoice(configured)
 }
