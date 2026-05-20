@@ -2,7 +2,7 @@ VERSION := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev
 LDFLAGS := -s -w -X github.com/arcmesh-labs/arcmesh-pm/cmd.version=$(VERSION)
 MODULE  := github.com/arcmesh-labs/arcmesh-pm
 
-.PHONY: build install release clean test
+.PHONY: build install release clean test test-integration
 
 build:
 	go build -ldflags "$(LDFLAGS)" -o bin/apm .
@@ -22,3 +22,6 @@ clean:
 
 test:
 	go test ./...
+
+test-integration:
+	@bash tests/integration/run.sh
